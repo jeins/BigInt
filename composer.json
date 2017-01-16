@@ -1,0 +1,17 @@
+{
+  "name": "bigint",
+  "description": "BigInteger libraray",
+  "type": "library",
+  "require": {
+    "php": ">=5.6"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ITS\\": "src/",
+      "ITS\\Tests\\": "tests/"
+    }
+  }
+}
