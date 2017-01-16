@@ -8,4 +8,4 @@ php:
 before_script:
   - composer install
 
-script: vendor/bin/phpunit --debug
+script: phpunit --configuration phpunit.xml
