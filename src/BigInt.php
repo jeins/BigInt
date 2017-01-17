@@ -248,11 +248,16 @@ class BigInt extends BigNumber
         return [$q, $r];
     }
 
+    /**
+     * exponentiate a number.
+     * @param string $x
+     * @param int $y
+     * @return string
+     */
     public function power($x, $y)
     {
-        if($y === '0') return '1';
-        if($y === '1') return $x;
-        if($y < 0) throw new \Exception('The exponent must a positive num');
+        if ($y === 0) return '1';
+        if ($y === 1) return $x;
 
         $odd = $y % 2;
         $y -= $odd;
