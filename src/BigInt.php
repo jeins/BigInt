@@ -250,7 +250,21 @@ class BigInt extends BigNumber
 
     public function power($x, $y)
     {
+        if($y === '0') return '1';
+        if($y === '1') return $x;
+        if($y < 0) throw new \Exception('The exponent must a positive num');
 
+        $odd = $y % 2;
+        $y -= $odd;
+
+        $aa = $this->mul($x, $x);
+        $result = $this->power($aa, $y / 2);
+
+        if ($odd === 1) {
+            $result = $this->mul($result, $x);
+        }
+
+        return $result;
     }
 
     public function powerMod($x, $y, $m){}

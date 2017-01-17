@@ -6,7 +6,7 @@ namespace ITS\Tests;
 
 use ITS\BigInt;
 
-class BigIntTest extends \PHPUnit_Framework_TestCase
+class BigIntSimpleCalculationTest extends \PHPUnit_Framework_TestCase
 {
     private function providerSimpleCalculation()
     {
