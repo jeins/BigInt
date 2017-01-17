@@ -97,4 +97,44 @@ class BigNumber
 
         return $biggerLength;
     }
+
+    /**
+     *  comparing two non-signed large numbers.
+     * @param string $x
+     * @param string $y
+     * @param int $xLen
+     * @param int $yLen
+     * @return int [-1, 0, 1]
+     */
+    public function compare($x, $y, $xLen, $yLen)
+    {
+        if ($xLen > $yLen) return 1;
+        if ($xLen < $yLen) return -1;
+
+        for($i=0; $i < $xLen; $i++){
+            $xInt = (int)$x[$i];
+            $yInt = (int)$y[$i];
+
+            if($xInt > $yInt) return 1;
+            if($xInt < $yInt) return -1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * negates a number
+     * @param string $n
+     * @return string
+     */
+    public function negate($n)
+    {
+        if ($n === '0') {
+            return '0';
+        }
+        if ($n[0] === '-') {
+            return substr($n, 1);
+        }
+        return '-' . $n;
+    }
 }

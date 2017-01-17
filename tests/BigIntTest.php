@@ -35,7 +35,18 @@ class BigIntTest extends \PHPUnit_Framework_TestCase
         foreach ($this->providerSimpleCalculation() as $num){
             $x = $num[0];
             $y = $num[1];
+
             $this->assertSame($this->bigInt()->add($x, $y), gmp_strval(gmp_add($x, $y)));
+        }
+    }
+
+    public function testSub()
+    {
+       foreach ($this->providerSimpleCalculation() as $num){
+            $x = $num[0];
+            $y = $num[1];
+
+            $this->assertSame($this->bigInt()->sub($x, $y), gmp_strval(gmp_sub($x, $y)));
         }
     }
 }
