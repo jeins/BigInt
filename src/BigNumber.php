@@ -2,13 +2,15 @@
 
 namespace ITS;
 
+use ITS\Calculation\Calculation;
+
 class BigNumber
 {
     /**
      * The regular expression used to parse integer, decimal and rational numbers.
      * @var string
      */
-    private $regexp =
+    private static $regexp =
         '/^' .
         '(?<integral>[\-\+]?[0-9]+)' .
         '(?:' .
@@ -21,33 +23,7 @@ class BigNumber
         ')?' .
         '$/';
 
-    /**
-     * The max number of digits the platform can natively add, subtract or divide without overflow.
-     * @var int
-     */
-    public $maxDigitsAddDiv = 0;
-
-    /**
-     * The max number of digits the platform can natively multiply without overflow.
-     * @var int
-     */
-    public $maxDigitsMul = 0;
-
-    public function __construct()
-    {
-        switch (PHP_INT_SIZE) {
-            case 4:
-                $this->maxDigitsAddDiv = 9;
-                $this->maxDigitsMul = 4;
-                break;
-            case 8:
-                $this->maxDigitsAddDiv = 18;
-                $this->maxDigitsMul = 9;
-                break;
-        }
-    }
-
-    public function set($value)
+    public static function set($value)
     {
         if($value instanceof BigNumber) {
             return $value;
@@ -59,82 +35,37 @@ class BigNumber
 
         $value = (string) $value;
 
-        if (preg_match($this->regexp, $value, $matches) !== 1) {
+        if (preg_match(self::$regexp, $value, $matches) !== 1) {
             throw new \Exception('The given value does not represent a valid number.');
         }
+
+        return new BigInt($value);
     }
 
-    public function init($x, $y, &$xDig, &$yDig, &$xNeg, &$yNeg, &$xLen, &$yLen)
+    public static function compareWith($x, $y)
     {
-        $xNeg = ($x[0] === '-');
-        $yNeg = ($y[0] === '-');
+        $x = BigInt::set($x);
+        $y = BigInt::set($y);
+        $calc = new Calculation();
 
-        $xDig = $xNeg ? substr($x, 1) : $x;
-        $yDig = $yNeg ? substr($y, 1) : $y;
+        if($x instanceof BigInt && $y instanceof BigInt) return $calc->compare($x->value, $y->value);
 
-        $xLen = strlen($xDig);
-        $yLen = strlen($yDig);
+        return - self::compareWith($y, $x);
     }
 
-    /**
-     * Pads the left of one of the given numbers with zeros if necessary to make both numbers the same length.
-     * @param string $x
-     * @param string $y
-     * @param int $xLen
-     * @param int $yLen
-     * @return int
-     */
-    public function resize(&$x, &$y, $xLen, $yLen)
+    public static function eq($x, $y)
     {
-        $biggerLength = $xLen > $yLen ? $xLen : $yLen;
+        $x = BigNumber::set($x);
+        $y = BigNumber::set($y);
 
-        if ($xLen < $biggerLength) {
-            $x = str_repeat('0', $biggerLength - $xLen) . $x;
-        }
-        if ($yLen < $biggerLength) {
-            $y = str_repeat('0', $biggerLength - $yLen) . $y;
-        }
-
-        return $biggerLength;
+        return self::compareWith($x, $y) == 0;
     }
 
-    /**
-     *  comparing two non-signed large numbers.
-     * @param string $x
-     * @param string $y
-     * @param int $xLen
-     * @param int $yLen
-     * @return int [-1, 0, 1]
-     */
-    public function compare($x, $y, $xLen, $yLen)
-    {
-        if ($xLen > $yLen) return 1;
-        if ($xLen < $yLen) return -1;
-
-        for($i=0; $i < $xLen; $i++){
-            $xInt = (int)$x[$i];
-            $yInt = (int)$y[$i];
-
-            if($xInt > $yInt) return 1;
-            if($xInt < $yInt) return -1;
-        }
-
-        return 0;
-    }
-
-    /**
-     * negates a number
-     * @param string $n
-     * @return string
-     */
-    public function negate($n)
-    {
-        if ($n === '0') {
-            return '0';
-        }
-        if ($n[0] === '-') {
-            return substr($n, 1);
-        }
-        return '-' . $n;
-    }
+    public function gt($x, $y){}
+    public function even($n){}
+    public function bit($x, $y){}
+    public function shift($x, $y){}
+    public function zeroBits($n){}
+    public function reduce($n, $m){}
+    public function copy($x, $b){}
 }
