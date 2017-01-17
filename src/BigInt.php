@@ -9,6 +9,12 @@ class BigInt extends BigNumber
         parent::__construct();
     }
 
+    /**
+     * adds two numbers.
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     public function add($x, $y)
     {
         if($x === '0') return $y;
@@ -45,6 +51,12 @@ class BigInt extends BigNumber
         return strrev($result);
     }
 
+    /**
+     * subtracts two numbers.
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     public function sub($x, $y)
     {
         $this->init($x, $y, $xDig, $yDig, $xNeg, $yNeg, $xLen, $yLen);
@@ -93,6 +105,12 @@ class BigInt extends BigNumber
         return $result;
     }
 
+    /**
+     * multiplies two numbers.
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     public function mul($x, $y)
     {
         if($x === '0' || $y === '0') return '0';
@@ -132,9 +150,102 @@ class BigInt extends BigNumber
         return $result;
     }
 
+    /**
+     * division of two numbers and return quotient and remainder
+     * @param string $x
+     * @param string $y
+     * @return array [quotient, remainder]
+     */
     public function div($x, $y)
     {
+        if($x === '0') return ['0', '0'];
+        if($x === $y) return ['1', '0'];
+        if($y === '1') return [$x, '0'];
+        if($y === '-1') return [$this->negate($x), '0'];
 
+        $this->init($x, $y, $xDig, $yDig, $xNeg, $yNeg, $xLen, $yLen);
+
+        if ($xLen <= $this->maxDigitsAddDiv && $yLen <= $this->maxDigitsAddDiv) {
+            $a = (int) $x;
+            $b = (int) $y;
+
+            $r = $a % $b;
+            $q = ($a - $r) / $b;
+
+            $q = (string) $q;
+            $r = (string) $r;
+
+            return [$q, $r];
+        }
+
+        list ($q, $r) = $this->divProcessor($x, $y, $xLen, $yLen);
+
+        if ($xNeg !== $yNeg) {
+            $q = $this->negate($q);
+        }
+
+        if ($xNeg) {
+            $r = $this->negate($r);
+        }
+
+        return [$q, $r];
+    }
+
+    /**
+     * division processor of two non-signed large integers.
+     *
+     * @param string $x
+     * @param string $y
+     * @param int $xLen
+     * @param int $yLen
+     * @return string[] quotient & remainder
+     */
+    private function divProcessor($x, $y, $xLen, $yLen)
+    {
+        $compare = $this->compare($x, $y, $xLen, $yLen);
+
+        if ($compare === -1) {
+            return ['0', $x];
+        }
+
+        $q = '0'; // quotient
+        $r = $x; // remainder
+        $z = $yLen;
+
+        for (;;) {
+            $focus = substr($x, 0, $z);
+
+            $compare = $this->compare($focus, $y, $z, $yLen);
+
+            if ($compare === -1) {
+                if ($z === $xLen) {  // remainder < dividend
+                    break;
+                }
+
+                $z++;
+            }
+
+            $zeros = str_repeat('0', $xLen - $z);
+
+            $q = $this->add($q, '1' . $zeros);
+            $x = $this->sub($x, $y . $zeros);
+
+            $r = $x;
+
+            if ($r === '0') { // remainder == 0
+                break;
+            }
+
+            $xLen = strlen($x);
+
+            if ($xLen < $yLen) { // remainder < dividend
+                break;
+            }
+
+            $z = $yLen;
+        }
+
+        return [$q, $r];
     }
 
     public function power($x, $y)

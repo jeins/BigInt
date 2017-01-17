@@ -60,5 +60,15 @@ class BigIntTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testDiv()
+    {
+        foreach ($this->providerSimpleCalculation() as $num){
+            $x = $num[0];
+            $y = $num[1];
 
+            if($y !== '0'){
+                $this->assertSame($this->bigInt()->div($x, $y)[0], gmp_strval(gmp_div($x, $y)));
+            }
+        }
+    }
 }
