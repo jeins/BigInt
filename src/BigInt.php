@@ -77,6 +77,24 @@ class BigInt extends BigNumber
         return new BigInt($this->cal->powerMod($this->value, (int)$e, $m));
     }
 
+    public function powerModPrim($e, $p)
+    {
+        return new BigInt($this->cal->powerModPrim($this->value, (int)$e, $p));
+    }
+
+    public function gcd($n)
+    {
+        $n = BigInt::set($n);
+
+        if ($n->value === '0' && $this->value[0] !== '-') return $this;
+
+        if ($this->value === '0' && $n->value[0] !== '-') return $n;
+
+        $result = $this->cal->gcd($this->value, $n->value);
+
+        return new BigInt($result);
+    }
+
     public function toBigInteger()
     {
         return $this;
@@ -91,7 +109,7 @@ class BigInt extends BigNumber
         return BigInt::set($n)->toBigInteger();
     }
     public static function bigInt2String($n){
-        return BigInt::set($n)->toString();
+        return (string)BigInt::set($n);
     }
     public static function int2BigInt($n){
         return BigInt::set($n)->toBigInteger();

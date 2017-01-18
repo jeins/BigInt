@@ -315,12 +315,24 @@ class Calculation extends AbstractCalculation
 
     public function powerModPrim($x, $y, $p)
     {
-        // TODO: Implement powerModPrim() method.
+        if($y < $p-1){
+            return $this->powerMod($x, $y, $p);
+        }
+
+        if($x < $p){
+            $y = bcmod($y, ($p-1));
+            return $this->powerMod($x, $y, $p);
+        }
+
+        return $this->powerMod($x, $y, $p);
     }
 
     public function gcd($x, $y)
     {
-        // TODO: Implement gcd() method.
+        if ($x === '0') return $this->absolute($y);
+        if ($y === '0') return $this->absolute($x);
+
+        return $this->gcd($y, $this->div($x, $y)[1]); //$this->div($x, $y)[1] get the remainder
     }
 
     public function eGcd($x, $y)

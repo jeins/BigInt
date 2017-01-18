@@ -16,7 +16,7 @@ abstract class AbstractCalculation
      * @param int $yLen
      */
     final public function init($x, $y, &$xDig, &$yDig, &$xNeg, &$yNeg, &$xLen, &$yLen)
-    {var_dump($x);
+    {
         $xNeg = ($x[0] === '-');
         $yNeg = ($y[0] === '-');
 
@@ -93,6 +93,16 @@ abstract class AbstractCalculation
             return substr($n, 1);
         }
         return '-' . $n;
+    }
+
+    /**
+     * get the absolute value of a number.
+     * @param $n
+     * @return string
+     */
+    public function absolute($n)
+    {
+        return ($n[0] === '-') ? substr($n, 1) : $n;
     }
 
     abstract public function add($x, $y);

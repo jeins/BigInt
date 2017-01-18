@@ -1,6 +1,5 @@
 <?php
 
-
 namespace ITS\Tests;
 
 
@@ -33,7 +32,7 @@ class BigIntSimpleCalculationTest extends \PHPUnit_Framework_TestCase
 
             $xBigInt = BigInt::string2BigInt($x);
 
-            $this->assertSame((string)$xBigInt->addWith(BigInt::string2BigInt($y)), gmp_strval(gmp_add($x, $y)));
+            $this->assertSame(BigInt::bigInt2String($xBigInt->addWith(BigInt::string2BigInt($y))), gmp_strval(gmp_add($x, $y)));
         }
     }
 
@@ -45,7 +44,7 @@ class BigIntSimpleCalculationTest extends \PHPUnit_Framework_TestCase
 
            $xBigInt = BigInt::string2BigInt($x);
 
-            $this->assertSame((string)$xBigInt->subWith(BigInt::string2BigInt($y)), gmp_strval(gmp_sub($x, $y)));
+            $this->assertSame(BigInt::bigInt2String($xBigInt->subWith(BigInt::string2BigInt($y))), gmp_strval(gmp_sub($x, $y)));
         }
     }
 
@@ -57,7 +56,7 @@ class BigIntSimpleCalculationTest extends \PHPUnit_Framework_TestCase
 
             $xBigInt = BigInt::string2BigInt($x);
 
-            $this->assertSame((string)$xBigInt->mulWith(BigInt::string2BigInt($y)), gmp_strval(gmp_mul($x, $y)));
+            $this->assertSame(BigInt::bigInt2String($xBigInt->mulWith(BigInt::string2BigInt($y))), gmp_strval(gmp_mul($x, $y)));
         }
     }
 
@@ -70,7 +69,7 @@ class BigIntSimpleCalculationTest extends \PHPUnit_Framework_TestCase
             $xBigInt = BigInt::string2BigInt($x);
 
             if($y !== '0'){
-                $this->assertSame((string)$xBigInt->divWith(BigInt::string2BigInt($y)), gmp_strval(gmp_div($x, $y)));
+                $this->assertSame(BigInt::bigInt2String($xBigInt->divWith(BigInt::string2BigInt($y))), gmp_strval(gmp_div($x, $y)));
             }
         }
     }

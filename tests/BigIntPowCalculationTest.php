@@ -45,6 +45,27 @@ class BigIntPowCalculationTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    private function providerPowModPrimCalculation()
+    {
+        return [
+            ['0', '1', '2'],
+            ['1', '0', '2'],
+            ['1', '1', '2'],
+            ['0', '1', '3'],
+            ['1', '0', '3'],
+            ['2', '588', '449'],
+            ['588', '2', '499'],
+            ['2', '678', '9431'],
+            ['2173', '23', '475'],
+            ['678', '2', '9431'],
+            ['23', '2173', '11299'],
+            ['2173', '23', '11299'],
+            ['6371', '839', '9099469'],
+            ['839', '6371', '9099469'],
+            ['41858', '39848', '11749183']
+        ];
+    }
+
     public function testPower()
     {
         foreach ($this->providerPowCalculation() as $num){
@@ -53,7 +74,7 @@ class BigIntPowCalculationTest extends \PHPUnit_Framework_TestCase
 
             $xBigInt = BigInt::string2BigInt($x);
 
-            $this->assertSame((string)$xBigInt->power($y), gmp_strval(gmp_pow($x, $y)));
+            $this->assertSame(BigInt::bigInt2String($xBigInt->power($y)), gmp_strval(gmp_pow($x, $y)));
         }
     }
 
@@ -66,7 +87,12 @@ class BigIntPowCalculationTest extends \PHPUnit_Framework_TestCase
 
             $bigInt = BigInt::string2BigInt($n);
 
-            $this->assertSame((string)$bigInt->powerMod($e, $m), bcpowmod($n, $e, $m));
+            $this->assertSame(BigInt::bigInt2String($bigInt->powerMod($e, $m)), bcpowmod($n, $e, $m));
         }
     }
+
+//    public function testPowerModPrim()
+//    {
+//
+//    }
 }
