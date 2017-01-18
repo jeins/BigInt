@@ -93,6 +93,14 @@ class BigIntPowCalculationTest extends \PHPUnit_Framework_TestCase
 
 //    public function testPowerModPrim()
 //    {
+//        foreach ($this->providerPowModPrimCalculation() as $num){
+//            $n = $num[0];
+//            $e = $num[1];
+//            $p = $num[2];
 //
+//            $bigInt = BigInt::string2BigInt($n);
+//
+//            $this->assertSame(BigInt::bigInt2String($bigInt->powerModPrim($e, $p)), bcpowmod($n, $e, $p));
+//        }
 //    }
 }
