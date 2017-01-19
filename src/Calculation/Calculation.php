@@ -52,12 +52,34 @@ class Calculation extends AbstractCalculation
             return (string) ((int) $x + (int) $y);
         }
 
-        $size = $this->resize($xDig, $yDig, $xLen, $yLen);
+        if ($xNeg === $yNeg) {
+            $result = $this->addProcessor($xDig, $yDig, $xLen, $yLen);
+        } else {
+            $result = $this->subProcessor($xDig, $yDig, $xLen, $yLen);
+        }
+
+        if ($xNeg) {
+            $result = $this->negate($result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $x
+     * @param string $y
+     * @param int $xLen
+     * @param int $yLen
+     * @return string
+     */
+    private function addProcessor($x, $y, $xLen, $yLen)
+    {
+        $size = $this->resize($x, $y, $xLen, $yLen);
         $over = 0;
         $result = '';
 
         for($i=$size-1; $i >= 0; $i--){
-            $sum = (int) $xDig[$i] + (int) $yDig[$i] + $over;
+            $sum = (int) $x[$i] + (int) $y[$i] + $over;
 
             if($sum >= 10){
                 $over = 1;
@@ -84,33 +106,39 @@ class Calculation extends AbstractCalculation
      */
     public function sub($x, $y)
     {
-        $this->init($x, $y, $xDig, $yDig, $xNeg, $yNeg, $xLen, $yLen);
+        return $this->add($x, $this->negate($y));
+    }
 
-        if ($xLen <= $this->maxDigitsAddDiv && $yLen <= $this->maxDigitsAddDiv) {
-            return (string) ((int) $x - (int) $y);
-        }
+    /**
+     * @param string $x
+     * @param string $y
+     * @param int $xLen
+     * @param int $yLen
+     * @return string
+     */
+    private function subProcessor($x, $y, $xLen, $yLen)
+    {
+        if($x === $y) return '0';
 
-        if($xDig === $yDig) return '0';
-
-        $compare = $this->compareUnsigned($xDig, $yDig, $xLen, $yLen);
+        $compare = $this->compareUnsigned($x, $y, $xLen, $yLen);
         $invert = ($compare === -1);
 
         if($invert){
-            $tmp = $xDig;
-            $xDig = $yDig;
-            $yDig = $tmp;
+            $tmp = $x;
+            $x = $y;
+            $y = $tmp;
 
             $tmpLen = $xLen;
             $xLen = $yLen;
             $yLen = $tmpLen;
         }
 
-        $size = $this->resize($xDig, $yDig, $xLen, $yLen);
+        $size = $this->resize($x, $y, $xLen, $yLen);
         $over = 0;
         $result = '';
 
         for($i=$size-1; $i >= 0; $i--){
-            $sum = (int) $xDig[$i] - (int) $yDig[$i] - $over;
+            $sum = (int) $x[$i] - (int) $y[$i] - $over;
 
             if($sum < 0){
                 $over = 1;
@@ -129,8 +157,6 @@ class Calculation extends AbstractCalculation
 
         return $result;
     }
-
-
 
     /**
      * multiplies two numbers.
@@ -337,24 +363,44 @@ class Calculation extends AbstractCalculation
         return $this->gcd($y, $this->div($x, $y)[1]); //$this->div($x, $y)[1] get the remainder
     }
 
-    public function eGcd($x, $y)
+    public function eGcd($a, $b)
     {
-        $a = ['u' => BigInt::string2BigInt('1'), 'v' => BigInt::string2BigInt('0')];
-        $b = ['u' => BigInt::string2BigInt('0'), 'v' => BigInt::string2BigInt('1')];
+//        $a = ['u' => BigInt::string2BigInt('1'), 'v' => BigInt::string2BigInt('0')];
+//        $b = ['u' => BigInt::string2BigInt('0'), 'v' => BigInt::string2BigInt('1')];
 
-        while(!BigInt::eq($y, BigInt::string2BigInt('0'))){
-            if(BigInt::gt($x, $y)){
-                $x = $this->sub($x, $y);
-                $a['u']->value = $this->sub($a['u']->value, $b['u']->value);
-                $a['v']->value = $this->sub($a['v']->value, $b['v']->value);
-            } else{
-                $y = $this->sub($y, $x);
-                $b['u']->value = $this->sub($b['u']->value, $a['u']->value);
-                $b['v']->value = $this->sub($b['v']->value, $a['v']->value);
-            }
+        $x = BigInt::string2BigInt('0')->value;
+        $lastX = BigInt::string2BigInt('1')->value;
+        $y = BigInt::string2BigInt('1')->value;
+        $lastY = BigInt::string2BigInt('0')->value;
+
+        while(!BigInt::eq($b, BigInt::string2BigInt('0'))){
+            $quotientAndRemainder = $this->div($a, $b);
+            $quotient = $quotientAndRemainder[0];
+
+            $tmp = $a;
+            $a = $b;
+            $b = $quotientAndRemainder[1];
+
+            $tmp = $x;
+            $x = BigInt::string2BigInt(gmp_sub($lastX, $this->mul($quotient, $x)))->value;
+            $lastX = $tmp;
+
+            $tmp = $y;
+            $y = BigInt::string2BigInt(gmp_sub($lastY, $this->mul($quotient, $y)))->value;
+            $lastY = $tmp;
+
+//            if(BigInt::gt($x, $y)){
+//                $x = $this->sub($x, $y);
+//                $a['u']->value = $this->sub($a['u']->value, $b['u']->value);
+//                $a['v']->value = $this->sub($a['v']->value, $b['v']->value);
+//            } else{
+//                $y = $this->sub($y, $x);
+//                $b['u']->value = $this->sub($b['u']->value, $a['u']->value);
+//                $b['v']->value = $this->sub($b['v']->value, $a['v']->value);
+//            }
         }
 
-        return [$x, $a['u'], $a['v']];
+        return [$a, $lastX, $lastY];
     }
 
     /**
