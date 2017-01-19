@@ -4,6 +4,8 @@
 namespace ITS\Calculation;
 
 
+use ITS\BigInt;
+
 class Calculation extends AbstractCalculation
 {
     /**
@@ -337,7 +339,22 @@ class Calculation extends AbstractCalculation
 
     public function eGcd($x, $y)
     {
-        // TODO: Implement eGcd() method.
+        $a = ['u' => BigInt::string2BigInt('1'), 'v' => BigInt::string2BigInt('0')];
+        $b = ['u' => BigInt::string2BigInt('0'), 'v' => BigInt::string2BigInt('1')];
+
+        while(!BigInt::eq($y, BigInt::string2BigInt('0'))){
+            if(BigInt::gt($x, $y)){
+                $x = $this->sub($x, $y);
+                $a['u']->value = $this->sub($a['u']->value, $b['u']->value);
+                $a['v']->value = $this->sub($a['v']->value, $b['v']->value);
+            } else{
+                $y = $this->sub($y, $x);
+                $b['u']->value = $this->sub($b['u']->value, $a['u']->value);
+                $b['v']->value = $this->sub($b['v']->value, $a['v']->value);
+            }
+        }
+
+        return [$x, $a['u'], $a['v']];
     }
 
     /**

@@ -95,6 +95,19 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    public function eGcd($n)
+    {
+        $n = BigInt::set($n);
+
+        if ($n->value === '0' && $this->value[0] !== '-') return $this;
+
+        if ($this->value === '0' && $n->value[0] !== '-') return $n;
+
+        $result = $this->cal->eGcd($this->value, $n->value);
+
+        return [new BigInt($result[0]), new BigInt($result[1]), new BigInt($result[2])];
+    }
+
     public function toBigInteger()
     {
         return $this;

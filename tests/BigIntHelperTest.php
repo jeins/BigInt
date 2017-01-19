@@ -28,4 +28,26 @@ class BigIntHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse(BigInt::eq($xBigInt, $yBigInt));
     }
+
+    public function testXBiggerThanY()
+    {
+        $x = '497323236293994552945025999384123393152510078904252194576614865391888856047008115326975';
+        $y = '497323236293994552945025999384';
+
+        $xBigInt = BigInt::string2BigInt($x);
+        $yBigInt = BigInt::string2BigInt($y);
+
+        $this->assertTrue(BigInt::gt($xBigInt, $yBigInt));
+    }
+
+    public function testYSmallerThanX()
+    {
+        $x = '497323236293994552945025999384123393152510078904252194576614865391888856047008115326975';
+        $y = '497323236293994552945025999384';
+
+        $xBigInt = BigInt::string2BigInt($x);
+        $yBigInt = BigInt::string2BigInt($y);
+
+        $this->assertFalse(BigInt::gt($yBigInt, $xBigInt));
+    }
 }

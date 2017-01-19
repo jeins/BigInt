@@ -61,7 +61,9 @@ class BigNumber
         return self::compareWith($x, $y) == 0;
     }
 
-    public function gt($x, $y){}
+    public static function gt($x, $y){
+        return self::compareWith($x, $y) > 0;
+    }
     public function even($n){}
     public function bit($x, $y){}
     public function shift($x, $y){}
