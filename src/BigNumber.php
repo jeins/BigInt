@@ -23,6 +23,12 @@ class BigNumber
         ')?' .
         '$/';
 
+    /**
+     * added value to be a big int / big number
+     * @param $value
+     * @return BigInt|string
+     * @throws \Exception
+     */
     public static function set($value)
     {
         if($value instanceof BigNumber) {
@@ -42,6 +48,12 @@ class BigNumber
         return new BigInt($value);
     }
 
+    /**
+     * compare two big int
+     * @param $x
+     * @param $y
+     * @return int
+     */
     public static function compareWith($x, $y)
     {
         $x = BigInt::set($x);
@@ -53,6 +65,12 @@ class BigNumber
         return - self::compareWith($y, $x);
     }
 
+    /**
+     * is the big equals
+     * @param $x
+     * @param $y
+     * @return bool
+     */
     public static function eq($x, $y)
     {
         $x = BigNumber::set($x);
@@ -61,13 +79,70 @@ class BigNumber
         return self::compareWith($x, $y) == 0;
     }
 
+    /**
+     * greater than
+     * @param $x
+     * @param $y
+     * @return bool
+     */
     public static function gt($x, $y){
         return self::compareWith($x, $y) > 0;
     }
-    public function even($n){}
+
+    /**
+     * is n even
+     * @param $n
+     * @return bool
+     */
+    public static function even($n){
+        if(gmp_strval(gmp_mod($n, 2)) === '0'){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $x
+     * @param $y
+     */
     public function bit($x, $y){}
-    public function shift($x, $y){}
+
+    /**
+     * @param $x
+     * @param $y
+     * @return int
+     */
+    public static function shift($x, $y){
+        if(self::gt($y, BigInt::int2BigInt(0) || self::eq($y, BigInt::int2BigInt(0)))){
+            $x = $y >> 2;
+        }
+
+        return $x;
+    }
+
+    /**
+     * @param $n
+     */
     public function zeroBits($n){}
+
+    /**
+     * @param $n
+     * @param $m
+     */
     public function reduce($n, $m){}
-    public function copy($x, $b){}
+
+    /**
+     * copy the value of x to b, if b is null
+     * @param $x
+     * @param $b
+     * @return mixed
+     */
+    public static function copy($x, $b){
+        if($b === null || self::eq($b, BigInt::int2BigInt(0))){
+            $b = &$x;
+        }
+
+        return $b;
+    }
 }

@@ -105,13 +105,77 @@ abstract class AbstractCalculation
         return ($n[0] === '-') ? substr($n, 1) : $n;
     }
 
+    /**
+     * addition calculation
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     abstract public function add($x, $y);
+
+    /**
+     * subtracts calculation
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     abstract public function sub($x, $y);
+
+    /**
+     * multiplies calculation
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     abstract public function mul($x, $y);
+
+    /**
+     * division calculation and return quotient and remainder
+     * @param string $x
+     * @param string $y
+     * @return array [quotient, remainder]
+     */
     abstract public function div($x, $y);
+
+    /**
+     * exponentiation a number.
+     * @param string $x
+     * @param int $y
+     * @return string
+     */
     abstract public function power($x, $y);
+
+    /**
+     * exponentiation modulo
+     * @param string $x
+     * @param int $y
+     * @param int $m
+     * @return string
+     */
     abstract public function powerMod($x, $y, $m);
+
+    /**
+     * power modulo prime calculation
+     * @param string $x
+     * @param int $y
+     * @param string $p
+     * @return string
+     */
     abstract public function powerModPrim($x, $y, $p);
+
+    /**
+     * euclidean calculation
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     abstract public function gcd($x, $y);
+
+    /**
+     * extended euclidean calculation
+     * @param string $x
+     * @param string $y
+     * @return array
+     */
     abstract public function eGcd($x, $y);
 }

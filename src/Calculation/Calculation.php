@@ -66,6 +66,7 @@ class Calculation extends AbstractCalculation
     }
 
     /**
+     * addition processor
      * @param string $x
      * @param string $y
      * @param int $xLen
@@ -110,6 +111,7 @@ class Calculation extends AbstractCalculation
     }
 
     /**
+     * subtracts processor
      * @param string $x
      * @param string $y
      * @param int $xLen
@@ -246,7 +248,6 @@ class Calculation extends AbstractCalculation
 
     /**
      * division processor of two non-signed large integers.
-     *
      * @param string $x
      * @param string $y
      * @param int $xLen
@@ -326,6 +327,13 @@ class Calculation extends AbstractCalculation
         return $result;
     }
 
+    /**
+     * power modulo calculation
+     * @param string $x
+     * @param int $y
+     * @param int $m
+     * @return string
+     */
     public function powerMod($x, $y, $m)
     {
         $result = '1';
@@ -341,6 +349,13 @@ class Calculation extends AbstractCalculation
         return $result;
     }
 
+    /**
+     * power modulo prime calculation
+     * @param string $x
+     * @param int $y
+     * @param string $p
+     * @return string
+     */
     public function powerModPrim($x, $y, $p)
     {
         if($y < $p-1){
@@ -355,6 +370,12 @@ class Calculation extends AbstractCalculation
         return $this->powerMod($x, $y, $p);
     }
 
+    /**
+     * euclidean calculation
+     * @param string $x
+     * @param string $y
+     * @return string
+     */
     public function gcd($x, $y)
     {
         if ($x === '0') return $this->absolute($y);
@@ -363,11 +384,14 @@ class Calculation extends AbstractCalculation
         return $this->gcd($y, $this->div($x, $y)[1]); //$this->div($x, $y)[1] get the remainder
     }
 
+    /**
+     * extended euclidean calculation
+     * @param string $a
+     * @param string $b
+     * @return array
+     */
     public function eGcd($a, $b)
     {
-//        $a = ['u' => BigInt::string2BigInt('1'), 'v' => BigInt::string2BigInt('0')];
-//        $b = ['u' => BigInt::string2BigInt('0'), 'v' => BigInt::string2BigInt('1')];
-
         $x = BigInt::string2BigInt('0')->value;
         $lastX = BigInt::string2BigInt('1')->value;
         $y = BigInt::string2BigInt('1')->value;
@@ -388,16 +412,6 @@ class Calculation extends AbstractCalculation
             $tmp = $y;
             $y = BigInt::string2BigInt(gmp_sub($lastY, $this->mul($quotient, $y)))->value;
             $lastY = $tmp;
-
-//            if(BigInt::gt($x, $y)){
-//                $x = $this->sub($x, $y);
-//                $a['u']->value = $this->sub($a['u']->value, $b['u']->value);
-//                $a['v']->value = $this->sub($a['v']->value, $b['v']->value);
-//            } else{
-//                $y = $this->sub($y, $x);
-//                $b['u']->value = $this->sub($b['u']->value, $a['u']->value);
-//                $b['v']->value = $this->sub($b['v']->value, $a['v']->value);
-//            }
         }
 
         return [$a, $lastX, $lastY];

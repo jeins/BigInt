@@ -22,6 +22,11 @@ class BigInt extends BigNumber
         $this->cal = new Calculation();
     }
 
+    /**
+     * addition the bigint with another bigint
+     * @param $n
+     * @return $this|BigInt
+     */
     public function addWith($n)
     {
         $n = BigInt::set($n);
@@ -33,6 +38,11 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    /**
+     * subtracts the bigint with another bigint
+     * @param $n
+     * @return $this|BigInt
+     */
     public function subWith($n)
     {
         $n = BigInt::set($n);
@@ -44,6 +54,11 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    /**
+     * multiplies the bigint with another bigint
+     * @param $n
+     * @return $this|BigInt
+     */
     public function mulWith($n)
     {
         $n = BigInt::set($n);
@@ -55,6 +70,12 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    /**
+     * division the bigint with another bigint
+     * @param $n
+     * @return $this|BigInt
+     * @throws \Exception
+     */
     public function divWith($n)
     {
         $n = BigInt::set($n);
@@ -67,21 +88,43 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    /**
+     * exponentiation the big int with exponent
+     * @param $exponent
+     * @return BigInt
+     */
     public function power($exponent)
     {
         return new BigInt($this->cal->power($this->value, (int)$exponent));
     }
 
+    /**
+     * exponentiation the big int with modulo
+     * @param $e
+     * @param $m
+     * @return BigInt
+     */
     public function powerMod($e, $m)
     {
         return new BigInt($this->cal->powerMod($this->value, (int)$e, $m));
     }
 
+    /**
+     * exponentiation module the big int with a prime
+     * @param $e
+     * @param $p
+     * @return BigInt
+     */
     public function powerModPrim($e, $p)
     {
         return new BigInt($this->cal->powerModPrim($this->value, (int)$e, $p));
     }
 
+    /**
+     * euclidean calculation
+     * @param $n
+     * @return $this|BigInt|string
+     */
     public function gcd($n)
     {
         $n = BigInt::set($n);
@@ -95,6 +138,11 @@ class BigInt extends BigNumber
         return new BigInt($result);
     }
 
+    /**
+     * extended euclidean calculation
+     * @param $n
+     * @return array|BigInt
+     */
     public function eGcd($n)
     {
         $n = BigInt::set($n);
@@ -108,23 +156,48 @@ class BigInt extends BigNumber
         return [new BigInt($result[0]), new BigInt($result[1]), new BigInt($result[2])];
     }
 
+    /**
+     * convert to big integer
+     * @return $this
+     */
     public function toBigInteger()
     {
         return $this;
     }
 
+    /**
+     * get the string value
+     * @return string
+     */
     public function __toString()
     {
         return $this->value;
     }
 
+    /**
+     * convert string to big integer
+     * @param $n
+     * @return $this
+     */
     public static function string2BigInt($n){
         return BigInt::set($n)->toBigInteger();
     }
+
+    /**
+     * convert big integer to string
+     * @param $n
+     * @return string
+     */
     public static function bigInt2String($n){
         return (string)BigInt::set($n);
     }
+
+    /**
+     * convert int to bit integer
+     * @param $n
+     * @return $this
+     */
     public static function int2BigInt($n){
-        return BigInt::set($n)->toBigInteger();
+        return BigInt::set((int)$n)->toBigInteger();
     }
 }
