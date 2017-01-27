@@ -200,4 +200,34 @@ class BigInt extends BigNumber
     public static function int2BigInt($n){
         return BigInt::set((int)$n)->toBigInteger();
     }
+
+    /**
+     * generate random number from size
+     * @param $size
+     * @return BigInt
+     */
+    public static function getRandom($size){
+        $result = '';
+
+        for($i = 0; $i < $size; $i++) {
+            $result .= mt_rand(0, 9);
+        }
+
+        return new BigInt($result);
+    }
+
+    /**
+     * generate random odd number from size
+     * @param $size
+     * @return BigInt
+     */
+    public static function getRandomOdd($size){
+        $randomNum = self::getRandom($size);
+
+        while(bcmod($randomNum, 2) == 0){
+            $randomNum = $randomNum->addWith(BigInt::set('1'));
+        }
+
+        return $randomNum;
+    }
 }
