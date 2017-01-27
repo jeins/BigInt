@@ -1,6 +1,6 @@
 {
   "name": "bigint",
-  "description": "BigInteger libraray",
+  "description": "BigInteger library",
   "type": "library",
   "require": {
     "php": ">=5.6"

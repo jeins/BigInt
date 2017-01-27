@@ -1,9 +1,9 @@
 <?php
 
-namespace ITS\Tests;
+namespace ITS\Tests\BigInt;
 
 
-use ITS\BigInt;
+use ITS\BigInt\BigInt;
 
 class BigIntHelperTest extends \PHPUnit_Framework_TestCase
 {

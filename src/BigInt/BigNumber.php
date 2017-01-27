@@ -1,8 +1,8 @@
 <?php
 
-namespace ITS;
+namespace ITS\BigInt;
 
-use ITS\Calculation\Calculation;
+use ITS\BigInt\Calculation\Calculation;
 
 class BigNumber
 {

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace ITS\Calculation;
+namespace ITS\BigInt\Calculation;
 
 
-use ITS\BigInt;
+use ITS\BigInt\BigInt;
 
 class Calculation extends AbstractCalculation
 {

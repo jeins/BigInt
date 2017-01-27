@@ -1,6 +1,6 @@
 <?php
 
-namespace ITS\Calculation;
+namespace ITS\BigInt\Calculation;
 
 abstract class AbstractCalculation
 {
