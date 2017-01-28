@@ -15,19 +15,22 @@ class Prime implements IPrime
      */
     public static function isPrimeFermatWithRandomNum($number, $rounds)
     {
-        if($number < 2) return false;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
-        if(bcmod($number, 2) == 0) return false;
+
+        $isPrime = [];
 
         for($i=0; $i<$rounds; $i++){
             $getRandomNumber = rand(2, $number-1);
 
-            if(self::doFermatPseudoPrime($number, $getRandomNumber) !== '1') {
-                return false;
+            if(self::doFermatTest($number, $getRandomNumber) !== '1') {
+                $isPrime[] = false;
+            } else{
+                $isPrime[] = true;
             }
         }
 
-        return true;
+        return (in_array(false, $isPrime)) ? false : true;
     }
 
     /**
@@ -37,12 +40,12 @@ class Prime implements IPrime
      */
     public static function isPrimeFermatWithArrayNumbers($number, $bases)
     {
-        if($number < 2) return false;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
         if(bcmod($number, 2) == 0) return false;
 
-        for($i=0; $i<count($bases); $i++){
-            if(self::doFermatPseudoPrime($number, $bases[$i]) !== '1') {
+        foreach ($bases as $basis){
+            if(self::doFermatTest($number, $basis) !== '1') {
                 return false;
             }
         }
@@ -50,13 +53,52 @@ class Prime implements IPrime
         return true;
     }
 
+    public static function isPrimeEulerWithRandomNum($number, $rounds)
+    {
+        if($number < 2 || bcmod($number, 2) == 0) return false;
+        if((int)$number === 2) return true;
+
+        $isPrime = [];
+
+        for($i=0; $i<$rounds; $i++){
+            $getRandomNumber = rand(2, $number-1);
+
+            $res = self::doEulerTest($number, $getRandomNumber);
+            if(!($res == 1 || $res == $number - 1)) {
+                $isPrime[] = false;
+            } else{
+                $isPrime[] = true;
+            }
+        }
+
+        return (in_array(false, $isPrime)) ? false : true;
+    }
+
+    public static function isPrimeEulerWithArrayNumbers($number, $bases)
+    {
+        if($number < 2 || bcmod($number, 2) == 0) return false;
+        if((int)$number === 2) return true;
+
+        foreach ($bases as $basis){
+            $res = self::doEulerTest($number, $basis);
+
+            if(!($res == 1 || $res == $number - 1)) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
     /**
      * @inheritDoc
      */
-    public static function doFermatPseudoPrime($expectedPrime, $randNumber)
+    public static function doFermatTest($expectedPrime, $randNumber)
     {
         $bigInt = BigInt::string2BigInt((string)$randNumber);
-        $powMod = $bigInt->powerMod($expectedPrime-1, $expectedPrime);
+        $expectedPrimeToBigInt = BigInt::string2BigInt((string)$expectedPrime);
+
+        $powMod = $bigInt->powerMod($expectedPrimeToBigInt->subWith(BigInt::string2BigInt('1'))->value, $expectedPrime);
 
         return $powMod->value;
     }
@@ -64,16 +106,43 @@ class Prime implements IPrime
     /**
      * @inheritDoc
      */
-    public static function doEulerPseudoPrime($expectedPrime, $randNumber)
+    public static function doEulerTest($expectedPrime, $randNumber)
     {
-        // TODO: Implement doEulerPseudoPrime() method.
+        $bigInt = BigInt::string2BigInt((string)$randNumber);
+        $expectedPrimeToBigInt = BigInt::string2BigInt((string)$expectedPrime);
+
+        $tmp = $expectedPrimeToBigInt->subWith(BigInt::string2BigInt('1'))->divWith(BigInt::string2BigInt('2'));
+        $powMod = $bigInt->powerMod($tmp->value, $expectedPrime);
+
+        return $powMod->value;
     }
 
     /**
      * @inheritDoc
      */
-    public static function doMrPseudoPrime($expectedPrime, $randNumber)
+    public static function doMillerRabinTest($expectedPrime, $randNumber)
     {
-        // TODO: Implement doMrPseudoPrime() method.
+        $d = $expectedPrime - 1;
+        $s = 0;
+        while ($d % 2 == 0) {
+            $d /= 2;
+            $s++;
+        }
+
+        $x = bcpowmod($randNumber, $d, $expectedPrime);
+
+        if ($x == 1 || $x == $expectedPrime-1){
+            return false;
+        } else{
+            for ($i = 1; $i < $s-1; $i++) {
+                $x = bcpowmod($randNumber, bcmul($d, bcpow(2, $i)), $expectedPrime);
+                if ($x == 1)
+                    return false;
+                if ($x == $expectedPrime-1)
+                    return true;
+            }
+
+            return true;
+        }
     }
 }

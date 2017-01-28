@@ -10,7 +10,7 @@ interface IPrime{
      * @param $randNumber
      * @return boolean
      */
-    public static function doFermatPseudoPrime($expectedPrime, $randNumber);
+    public static function doFermatTest($expectedPrime, $randNumber);
 
     /**
      * check is prime with euler method
@@ -18,7 +18,7 @@ interface IPrime{
      * @param $randNumber
      * @return boolean
      */
-    public static function doEulerPseudoPrime($expectedPrime, $randNumber);
+    public static function doEulerTest($expectedPrime, $randNumber);
 
     /**
      * check is prime with Miller-Rabin method
@@ -26,5 +26,5 @@ interface IPrime{
      * @param $randNumber
      * @return boolean
      */
-    public static function doMrPseudoPrime($expectedPrime, $randNumber);
+    public static function doMillerRabinTest($expectedPrime, $randNumber);
 }
