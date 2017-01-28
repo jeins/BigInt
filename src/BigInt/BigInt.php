@@ -106,7 +106,7 @@ class BigInt extends BigNumber
      */
     public function powerMod($e, $m)
     {
-        return new BigInt($this->cal->powerMod($this->value, (int)$e, $m));
+        return new BigInt($this->cal->powerMod($this->value, $e, $m));
     }
 
     /**

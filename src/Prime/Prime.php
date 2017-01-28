@@ -210,7 +210,7 @@ class Prime implements IPrime
     {
         $bigInt = BigInt::string2BigInt((string)$randNumber);
         $expectedPrimeToBigInt = BigInt::string2BigInt((string)$expectedPrime);
-        $x = $bigInt->powerMod($d, $expectedPrime);
+        $x = $bigInt->powerMod((int)$d, $expectedPrime);
 
         if (BigInt::eq($x, BigInt::string2BigInt('1')) || BigInt::eq($x, $expectedPrimeToBigInt->subWith(BigInt::string2BigInt('1')))){
             return true;
@@ -219,7 +219,7 @@ class Prime implements IPrime
         for ($i = 1; $i < $s; $i++) {
             $tmpPower = BigInt::string2BigInt('2')->power($i);
             $tmpMul = BigInt::string2BigInt((string)$d)->mulWith($tmpPower);
-            $x = $bigInt->powerMod($tmpMul->value, $expectedPrime);
+            $x = $bigInt->powerMod((int)$tmpMul->value, $expectedPrime);
 
             if (BigInt::eq($x, BigInt::string2BigInt('1')))
                 return false;

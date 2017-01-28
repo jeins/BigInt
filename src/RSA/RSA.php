@@ -78,7 +78,9 @@ class RSA implements IRSA
      */
     public static function encryptRSA($publicKey, $plain)
     {
-        // TODO: Implement encryptRSA() method.
+        $bigIntOfPlain = BigInt::string2BigInt((string)$plain);
+
+        return $bigIntOfPlain->powerMod($publicKey['e'], $publicKey['n'])->value;
     }
 
     /**
@@ -86,6 +88,8 @@ class RSA implements IRSA
      */
     public static function decryptRSA($privateKey, $cipher)
     {
-        // TODO: Implement decryptRSA() method.
+        $bigIntOfCipher = BigInt::string2BigInt((string)$cipher);
+
+        return $bigIntOfCipher->powerMod($privateKey['d'], $privateKey['n'])->value;
     }
 }
