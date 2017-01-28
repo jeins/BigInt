@@ -9,11 +9,13 @@ interface IRSA{
     /**
      * generate RSA keys
      * output p, q, e, d, n
-     * @param BigInt $e
-     * @param int $size
+     * @param $e
+     * @param $size
+     * @param null $p
+     * @param null $q
      * @return mixed
      */
-    public function generateRSAKeys($e, $size);
+    public static function generateRSAKeys($e, $size, $p = null, $q = null);
 
     /**
      * get public key of RSA
@@ -21,7 +23,7 @@ interface IRSA{
      * @param $key
      * @return mixed
      */
-    public function getPublicRSA($key);
+    public static function getPublicRSA($key);
 
     /**
      * get private key of RSA
@@ -29,7 +31,7 @@ interface IRSA{
      * @param $key
      * @return mixed
      */
-    public function getSecretRSA($key);
+    public static function getSecretRSA($key);
 
     /**
      * encrypt plain text with public key
@@ -37,7 +39,7 @@ interface IRSA{
      * @param $plain
      * @return mixed
      */
-    public function encryptRSA($publicKey, $plain);
+    public static function encryptRSA($publicKey, $plain);
 
     /**
      * decrypt the cipher to plain text
@@ -45,5 +47,5 @@ interface IRSA{
      * @param $cipher
      * @return mixed
      */
-    public function decryptRSA($privateKey, $cipher);
+    public static function decryptRSA($privateKey, $cipher);
 }

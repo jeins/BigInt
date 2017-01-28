@@ -24,49 +24,67 @@ class RSA implements IRSA
     }
 
     /**
-     * @param BigInt $e
-     * @param int $size
-     * @return mixed
+     * @inheritDoc
      */
-    public function generateRSAKeys($e, $size)
+    public static function generateRSAKeys($e, $size, $p = null, $q = null)
     {
-        // TODO: Implement generateRSAKeys() method.
+        $p = ($p == null) ? self::generatePrime($size) : $p;
+        do{
+            $q = ($q == null) ? self::generatePrime($size) : $q;
+        }while(BigInt::eq($p, $q));
+
+        $bigIntOfP = BigInt::string2BigInt((string)$p);
+        $bigIntOfQ = BigInt::string2BigInt((string)$q);
+
+        // calc phi
+        $pMinusOne = $bigIntOfP->subWith(BigInt::string2BigInt('1'));
+        $qMinusOne = $bigIntOfQ->subWith(BigInt::string2BigInt('1'));
+        $phi = $pMinusOne->mulWith($qMinusOne->value)->value;
+
+        // calc n
+        $n = $bigIntOfP->mulWith($bigIntOfQ->value)->value;
+
+        $d = gmp_strval(gmp_invert($e, $phi));
+
+        return ['p'=>$p, 'q'=>$q, 'n'=>$n, 'e'=>$e, 'd'=>$d];
     }
 
     /**
-     * @param $key
-     * @return mixed
+     * @inheritDoc
      */
-    public function getPublicRSA($key)
+    public static function getPublicRSA($key)
     {
-        // TODO: Implement getPublicRSA() method.
+        return [
+            'e' => $key['e'],
+            'n' => $key['n']
+        ];
     }
 
     /**
-     * @param $key
-     * @return mixed
+     * @inheritDoc
      */
-    public function getSecretRSA($key)
+    public static function getSecretRSA($key)
     {
-        // TODO: Implement getSecretRSA() method.
+        return [
+            'p' => $key['p'],
+            'q' => $key['q'],
+            'd' => $key['d'],
+            'n' => $key['n']
+        ];
     }
 
     /**
-     * @param $publicKey
-     * @param $plain
-     * @return mixed
+     * @inheritDoc
      */
-    public function encryptRSA($publicKey, $plain)
+    public static function encryptRSA($publicKey, $plain)
     {
         // TODO: Implement encryptRSA() method.
     }
 
     /**
-     * @param $privateKey
-     * @param $cipher
-     * @return mixed
+     * @inheritDoc
      */
-    public function decryptRSA($privateKey, $cipher)
+    public static function decryptRSA($privateKey, $cipher)
     {
         // TODO: Implement decryptRSA() method.
     }
