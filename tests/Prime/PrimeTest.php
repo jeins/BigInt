@@ -117,7 +117,6 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
     {
         $round = 40;
         foreach ($this->providerNotPrime() as $notPrime) {
-            var_dump($notPrime);
             $this->assertFalse(Prime::isPrimeMRWithRandomNum($notPrime, $round));
         }
     }
