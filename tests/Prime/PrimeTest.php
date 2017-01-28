@@ -33,39 +33,60 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testPrimeWithIsPrimeFermat()
+    public function testPrimeWithFermat()
     {
-        $this->assertTrue(Prime::isPrimeFermatWithRandomNum(13, 6));
+        $expectedPrime = 199;
+        $round = 30;
+        $this->assertTrue(Prime::isPrimeFermatWithRandomNum($expectedPrime, $round));
     }
 
 
-    public function testNotPrimeWithIsPrimeFermat()
+    public function testNotPrimeWithFermat()
     {
-        $this->assertFalse(Prime::isPrimeFermatWithRandomNum(2735, 10));
+        $notPrime = 2735;
+        $round = 30;
+        $this->assertFalse(Prime::isPrimeFermatWithRandomNum($notPrime, $round));
     }
 
-    public function testPrimeWithIsPrimeEuler()
+    public function testPrimeWithEuler()
     {
-        $this->assertTrue(Prime::isPrimeEulerWithRandomNum(13, 10));
+        $expectedPrime = 173;
+        $round = 50;
+        $this->assertTrue(Prime::isPrimeEulerWithRandomNum($expectedPrime, $round));
     }
 
-    public function testNotPrimeWithIsPrimeEuler()
+    public function testNotPrimeWithEuler()
     {
-        $this->assertFalse(Prime::isPrimeEulerWithRandomNum(4371, 10));
+        $notPrime = 4371;
+        $round = 50;
+        $this->assertFalse(Prime::isPrimeEulerWithRandomNum($notPrime, $round));
     }
 
-    public function testPrimeFromBasesWithIsPrimeFermat()
+    public function testPrimeWithMR()
+    {
+        $expectedPrime = 193;
+        $round = 50;
+        $this->assertTrue(Prime::isPrimeMRWithRandomNum($expectedPrime, $round));
+    }
+
+    public function testNotPrimeWithMR()
+    {
+        $notPrime = 4371;
+        $round = 40;
+        $this->assertFalse(Prime::isPrimeMRWithRandomNum($notPrime, $round));
+    }
+
+    public function testPseudoPrimeFromBasesWithFermat()
     {
         foreach ($this->providerFermatPseudoPrime() as $num){
-            var_dump($num[1]);
-            $this->assertTrue(Prime::isPrimeFermatWithArrayNumbers($num[1], $num[0]));
+            $this->assertTrue(Prime::isPrimeFermatWithBases($num[1], $num[0]));
         }
     }
 
-    public function testPrimeFromBasesWithIsPrimeEuler()
+    public function testPseudoPrimeFromBasesWithEuler()
     {
         foreach ($this->providerEulerPseudoPrime() as $prov){
-            $this->assertTrue(Prime::isPrimeEulerWithArrayNumbers($prov[1], $prov[0]));
+            $this->assertTrue(Prime::isPrimeEulerWithBases($prov[1], $prov[0]));
         }
     }
 }

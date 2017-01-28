@@ -24,7 +24,9 @@ interface IPrime{
      * check is prime with Miller-Rabin method
      * @param $expectedPrime
      * @param $randNumber
-     * @return boolean
+     * @param $d
+     * @param $s
+     * @return mixed
      */
-    public static function doMillerRabinTest($expectedPrime, $randNumber);
+    public static function doMillerRabinTest($expectedPrime, $randNumber, $d, $s);
 }

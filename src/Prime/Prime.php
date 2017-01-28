@@ -18,19 +18,15 @@ class Prime implements IPrime
         if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
 
-        $isPrime = [];
-
         for($i=0; $i<$rounds; $i++){
             $getRandomNumber = rand(2, $number-1);
 
             if(self::doFermatTest($number, $getRandomNumber) !== '1') {
-                $isPrime[] = false;
-            } else{
-                $isPrime[] = true;
+                return false;
             }
         }
 
-        return (in_array(false, $isPrime)) ? false : true;
+        return true;
     }
 
     /**
@@ -38,7 +34,7 @@ class Prime implements IPrime
      * @param $bases
      * @return mixed
      */
-    public static function isPrimeFermatWithArrayNumbers($number, $bases)
+    public static function isPrimeFermatWithBases($number, $bases)
     {
         if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
@@ -58,23 +54,19 @@ class Prime implements IPrime
         if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
 
-        $isPrime = [];
-
         for($i=0; $i<$rounds; $i++){
             $getRandomNumber = rand(2, $number-1);
 
             $res = self::doEulerTest($number, $getRandomNumber);
             if(!($res == 1 || $res == $number - 1)) {
-                $isPrime[] = false;
-            } else{
-                $isPrime[] = true;
+                return false;
             }
         }
 
-        return (in_array(false, $isPrime)) ? false : true;
+        return true;
     }
 
-    public static function isPrimeEulerWithArrayNumbers($number, $bases)
+    public static function isPrimeEulerWithBases($number, $bases)
     {
         if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
@@ -86,6 +78,48 @@ class Prime implements IPrime
                 return false;
             }
 
+        }
+        return true;
+    }
+
+    public static function isPrimeMRWithRandomNum($number, $rounds)
+    {
+        if($number < 2 || bcmod($number, 2) == 0) return false;
+        if((int)$number === 2) return true;
+
+        $d = $number - 1;
+        $s = 0;
+        while ($d % 2 == 0) {
+            $d /= 2;
+            $s++;
+        }
+
+        for ($i = 0; $i < $rounds; $i++) {
+            $getRandomNumber = rand(2, $number-1);
+
+            if(!self::doMillerRabinTest($number, $getRandomNumber, $d, $s)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function isPrimeMRWithBases($number, $bases)
+    {
+        if($number < 2 || bcmod($number, 2) == 0) return false;
+        if((int)$number === 2) return true;
+
+        $d = $number - 1;
+        $s = 0;
+        while ($d % 2 == 0) {
+            $d /= 2;
+            $s++;
+        }
+
+        foreach ($bases as $basis){
+            if(!self::doMillerRabinTest($number, $basis, $d, $s)){
+                return false;
+            }
         }
         return true;
     }
@@ -120,29 +154,27 @@ class Prime implements IPrime
     /**
      * @inheritDoc
      */
-    public static function doMillerRabinTest($expectedPrime, $randNumber)
+    public static function doMillerRabinTest($expectedPrime, $randNumber, $d, $s)
     {
-        $d = $expectedPrime - 1;
-        $s = 0;
-        while ($d % 2 == 0) {
-            $d /= 2;
-            $s++;
-        }
+        $bigInt = BigInt::string2BigInt((string)$randNumber);
+        $expectedPrimeToBigInt = BigInt::string2BigInt((string)$expectedPrime);
+        $x = $bigInt->powerMod($d, $expectedPrime);
 
-        $x = bcpowmod($randNumber, $d, $expectedPrime);
-
-        if ($x == 1 || $x == $expectedPrime-1){
-            return false;
-        } else{
-            for ($i = 1; $i < $s-1; $i++) {
-                $x = bcpowmod($randNumber, bcmul($d, bcpow(2, $i)), $expectedPrime);
-                if ($x == 1)
-                    return false;
-                if ($x == $expectedPrime-1)
-                    return true;
-            }
-
+        if (BigInt::eq($x, BigInt::string2BigInt('1')) || BigInt::eq($x, $expectedPrimeToBigInt->subWith(BigInt::string2BigInt('1')))){
             return true;
         }
+
+        for ($i = 1; $i < $s; $i++) {
+            $tmpPower = BigInt::string2BigInt('2')->power($i);
+            $tmpMul = BigInt::string2BigInt((string)$d)->mulWith($tmpPower);
+            $x = $bigInt->powerMod($tmpMul->value, $expectedPrime);
+
+            if (BigInt::eq($x, BigInt::string2BigInt('1')))
+                return false;
+            if (BigInt::eq($x, $expectedPrimeToBigInt->subWith(BigInt::string2BigInt('1'))))
+                return true;
+        }
+
+        return false;
     }
 }
