@@ -9,6 +9,46 @@ use ITS\Prime\Prime;
 
 class PrimeTest extends \PHPUnit_Framework_TestCase
 {
+    private function providerPrimeWithBases()
+    {
+        return [
+            ['11', ['2', '3', '5', '6', '7', '8', '9']],
+            ['29', ['2', '3', '5', '6', '7', '8', '9', '11']],
+            ['47', ['2', '3', '5', '6', '7', '8', '9', '11']],
+            ['104729', ['2', '3', '5', '6', '7', '8', '9', '11']],
+            ['7607', ['2', '3', '5', '6', '7', '8', '9', '11']],
+            ['32416187563', ['2', '3', '5', '6', '7', '8', '9', '11']],
+            ['32416190071', ['2', '3', '5', '6', '7', '8', '9', '11']]
+        ];
+    }
+
+    private function providerNotPrime()
+    {
+        return [
+            '1',
+            '48',
+            '4324213413251351',
+            '457568756845876866786',
+            '7665795679597579578956967957',
+            '21346587698797674564778007867511111',
+            '32498435834865326945234875183518437534758431',
+            '45065795679459567865734568458668435765995697569421',
+            '30024369469850064594387327432754385943969493248284238828538521'
+        ];
+    }
+
+    private function providerPrime()
+    {
+        return [
+            '2',
+            '7607',
+            '104729',
+            '179422921',
+            '32416187563',
+            '32416190071'
+        ];
+    }
+
     private function providerFermatPseudoPrime()
     {
         return [
@@ -35,45 +75,57 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
 
     public function testPrimeWithFermat()
     {
-        $expectedPrime = 199;
         $round = 30;
-        $this->assertTrue(Prime::isPrimeFermatWithRandomNum($expectedPrime, $round));
+        foreach ($this->providerPrime() as $expectedPrime){
+            $this->assertTrue(Prime::isPrimeFermatWithRandomNum($expectedPrime, $round));
+        }
     }
-
 
     public function testNotPrimeWithFermat()
     {
-        $notPrime = 2735;
         $round = 30;
-        $this->assertFalse(Prime::isPrimeFermatWithRandomNum($notPrime, $round));
+        foreach ($this->providerNotPrime() as $notPrime) {
+            $this->assertFalse(Prime::isPrimeFermatWithRandomNum($notPrime, $round));
+        }
     }
 
     public function testPrimeWithEuler()
     {
-        $expectedPrime = 173;
         $round = 50;
-        $this->assertTrue(Prime::isPrimeEulerWithRandomNum($expectedPrime, $round));
+        foreach ($this->providerPrime() as $expectedPrime) {
+            $this->assertTrue(Prime::isPrimeEulerWithRandomNum($expectedPrime, $round));
+        }
     }
 
     public function testNotPrimeWithEuler()
     {
-        $notPrime = 4371;
         $round = 50;
-        $this->assertFalse(Prime::isPrimeEulerWithRandomNum($notPrime, $round));
+        foreach ($this->providerNotPrime() as $notPrime) {
+            $this->assertFalse(Prime::isPrimeEulerWithRandomNum($notPrime, $round));
+        }
     }
 
     public function testPrimeWithMR()
     {
-        $expectedPrime = 193;
         $round = 50;
-        $this->assertTrue(Prime::isPrimeMRWithRandomNum($expectedPrime, $round));
+        foreach ($this->providerPrime() as $expectedPrime) {
+            $this->assertTrue(Prime::isPrimeMRWithRandomNum($expectedPrime, $round));
+        }
     }
 
     public function testNotPrimeWithMR()
     {
-        $notPrime = 4371;
         $round = 40;
-        $this->assertFalse(Prime::isPrimeMRWithRandomNum($notPrime, $round));
+        foreach ($this->providerNotPrime() as $notPrime) {
+            $this->assertFalse(Prime::isPrimeMRWithRandomNum($notPrime, $round));
+        }
+    }
+
+    public function testPrimeBasesWithDiv()
+    {
+        foreach ($this->providerPrimeWithBases() as $primeAndBases) {
+            $this->assertTrue(Prime::isPrimeDiv($primeAndBases[0], $primeAndBases[1]));
+        }
     }
 
     public function testPseudoPrimeFromBasesWithFermat()

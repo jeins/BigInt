@@ -9,19 +9,18 @@ class Prime implements IPrime
 {
 
     /**
+     * check is prime with fermat test, generate new each rounds
      * @param $number
      * @param $rounds
      * @return boolean
      */
     public static function isPrimeFermatWithRandomNum($number, $rounds)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         for($i=0; $i<$rounds; $i++){
-            $getRandomNumber = rand(2, $number-1);
-
-            if(self::doFermatTest($number, $getRandomNumber) !== '1') {
+            if(self::doFermatTest($number, self::generateRandomNumber($number)) !== '1') {
                 return false;
             }
         }
@@ -30,15 +29,15 @@ class Prime implements IPrime
     }
 
     /**
+     * check is prime with fermat test from bases numbers
      * @param $number
      * @param $bases
      * @return mixed
      */
     public static function isPrimeFermatWithBases($number, $bases)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
-        if(bcmod($number, 2) == 0) return false;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         foreach ($bases as $basis){
             if(self::doFermatTest($number, $basis) !== '1') {
@@ -49,15 +48,20 @@ class Prime implements IPrime
         return true;
     }
 
+    /**
+     * check is prime with euler test, generate new each rounds
+     * @param $number
+     * @param $rounds
+     * @return bool
+     */
     public static function isPrimeEulerWithRandomNum($number, $rounds)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         for($i=0; $i<$rounds; $i++){
-            $getRandomNumber = rand(2, $number-1);
+            $res = self::doEulerTest($number, self::generateRandomNumber($number));
 
-            $res = self::doEulerTest($number, $getRandomNumber);
             if(!($res == 1 || $res == $number - 1)) {
                 return false;
             }
@@ -66,10 +70,16 @@ class Prime implements IPrime
         return true;
     }
 
+    /**
+     * check is prime with euler test from bases numbers
+     * @param $number
+     * @param $bases
+     * @return bool
+     */
     public static function isPrimeEulerWithBases($number, $bases)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         foreach ($bases as $basis){
             $res = self::doEulerTest($number, $basis);
@@ -82,10 +92,16 @@ class Prime implements IPrime
         return true;
     }
 
+    /**
+     * check is prime with miller rabin test, generate new each rounds
+     * @param $number
+     * @param $rounds
+     * @return bool
+     */
     public static function isPrimeMRWithRandomNum($number, $rounds)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         $d = $number - 1;
         $s = 0;
@@ -95,19 +111,23 @@ class Prime implements IPrime
         }
 
         for ($i = 0; $i < $rounds; $i++) {
-            $getRandomNumber = rand(2, $number-1);
-
-            if(!self::doMillerRabinTest($number, $getRandomNumber, $d, $s)){
+            if(!self::doMillerRabinTest($number, self::generateRandomNumber($number), $d, $s)){
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * check is prime with miller rabin test from bases numbers
+     * @param $number
+     * @param $bases
+     * @return bool
+     */
     public static function isPrimeMRWithBases($number, $bases)
     {
-        if($number < 2 || bcmod($number, 2) == 0) return false;
         if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
 
         $d = $number - 1;
         $s = 0;
@@ -121,7 +141,39 @@ class Prime implements IPrime
                 return false;
             }
         }
+
         return true;
+    }
+
+    /**
+     * check is prime with trial division from bases numbers
+     * @param $number
+     * @param $bases
+     * @return bool
+     */
+    public static function isPrimeDiv($number, $bases)
+    {
+        if((int)$number === 2) return true;
+        if($number < 2 || bcmod($number, 2) == 0) return false;
+
+        $bigInt = BigInt::string2BigInt((string)$number);
+
+        foreach ($bases as $basis){
+            if(bcmod($bigInt->value, $basis) === '0'){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static function generateRandomNumber($max)
+    {
+        if(BigInt::gt(BigInt::string2BigInt((string)$max), BigInt::string2BigInt((string)PHP_INT_MAX))){
+            return rand(2, PHP_INT_MAX);
+        } else{
+            return rand(2, $max-1);
+        }
     }
 
     /**
