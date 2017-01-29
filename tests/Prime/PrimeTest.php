@@ -162,6 +162,4 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(Prime::isPrimeEulerWithBases($prov[1], $prov[0]));
         }
     }
-
-
 }

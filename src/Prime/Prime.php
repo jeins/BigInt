@@ -176,6 +176,71 @@ class Prime implements IPrime
         }
     }
 
+    public static function questionOne()
+    {
+        $primeUnder100 = ['2','3','5','7','11','13','17','19','23','29','31','37','41','43','47','53','59','61','67','71','73','79','83','89','97'];
+        $maxRound = 50;
+        $result = [];
+
+        for($i=1; $i<=100; $i++){
+            $randomNumber = BigInt::getRandomOdd(23)->value;
+            $tmp['test_num'] = $i;
+            $tmp['random_num'] = $randomNumber;
+            $tmp['result'] = false;
+
+            $resFermat = self::isPrimeFermatWithRandomNum($randomNumber, $maxRound);
+            $resEuler = self::isPrimeEulerWithRandomNum($randomNumber, $maxRound);
+            $resMr = self::isPrimeMRWithRandomNum($randomNumber, $maxRound);
+            $resDiv = self::isPrimeDiv($randomNumber, $primeUnder100);
+
+            if($resFermat && $resEuler && $resMr && $resDiv){
+                $tmp['result'] = true;
+            }
+
+            $tmp['detail_result'] = [
+                'fermat' => $resFermat,
+                'euler' => $resEuler,
+                'mr' => $resMr,
+                'div' => $resDiv
+            ];
+
+            $result[$i] = $tmp;
+        }
+
+        return $result;
+    }
+
+    public static function questionTwo()
+    {
+        $k = ['1-19', '20-29', '30-39'];
+        $tests = [
+            [1,4,6,8,10,12,14,15,16,18],
+            [20,21,22,24,25,26,27,28],
+            [30,32,33,34,35,36,38,39,40]
+        ];
+        $round = 50;
+        $result = [];
+
+        for ($i=0; $i<count($tests); $i++){
+            $tmp = [];
+            $tmp['section'] = $k[$i];
+
+            $tmp2 = [];
+            $j = 0;
+            foreach ($tests[$i] as $notPrime){
+                $resMr = self::isPrimeMRWithRandomNum($notPrime, $round);
+
+                $tmp2[$j]['num'] = $notPrime;
+                $tmp2[$j]['res'] = $resMr;
+                $j++;
+            }
+            $tmp['result'] = $tmp2;
+            $result[$i] = $tmp;
+        }
+
+        return $result;
+    }
+
     /**
      * @inheritDoc
      */
