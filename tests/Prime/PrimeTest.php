@@ -14,11 +14,11 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
         return [
             ['11', ['2', '3', '5', '6', '7', '8', '9']],
             ['29', ['2', '3', '5', '6', '7', '8', '9', '11']],
-            ['47', ['2', '3', '5', '6', '7', '8', '9', '11']],
-            ['104729', ['2', '3', '5', '6', '7', '8', '9', '11']],
-            ['7607', ['2', '3', '5', '6', '7', '8', '9', '11']],
-            ['32416187563', ['2', '3', '5', '6', '7', '8', '9', '11']],
-            ['32416190071', ['2', '3', '5', '6', '7', '8', '9', '11']]
+            ['47', ['2', '3', '5', '6', '7', '8', '9', '11', '23', '31']],
+            ['104729', ['2', '3', '5', '6', '7', '8', '9', '11', '23', '31']],
+            ['7607', ['2', '3', '5', '6', '7', '8', '9', '11', '23', '31']],
+            ['32416187563', ['2', '3', '5', '6', '7', '8', '9', '11', '23', '31']],
+            ['32416190071', ['2', '3', '5', '6', '7', '8', '9', '11', '23', '31']]
         ];
     }
 
@@ -128,6 +128,27 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testPrimeBasesWithFermat()
+    {
+        foreach ($this->providerPrimeWithBases() as $primeAndBases) {
+            $this->assertTrue(Prime::isPrimeFermatWithBases($primeAndBases[0], $primeAndBases[1]));
+        }
+    }
+
+    public function testPrimeBasesWithEuler()
+    {
+        foreach ($this->providerPrimeWithBases() as $primeAndBases) {
+            $this->assertTrue(Prime::isPrimeEulerWithBases($primeAndBases[0], $primeAndBases[1]));
+        }
+    }
+
+    public function testPrimeBasesWithMR()
+    {
+        foreach ($this->providerPrimeWithBases() as $primeAndBases) {
+            $this->assertTrue(Prime::isPrimeMRWithBases($primeAndBases[0], $primeAndBases[1]));
+        }
+    }
+
     public function testPseudoPrimeFromBasesWithFermat()
     {
         foreach ($this->providerFermatPseudoPrime() as $num){
@@ -141,4 +162,6 @@ class PrimeTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(Prime::isPrimeEulerWithBases($prov[1], $prov[0]));
         }
     }
+
+
 }
